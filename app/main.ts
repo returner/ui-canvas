@@ -1,7 +1,12 @@
 
-class Main {
+import * as $ from "jquery";
+import jQueryUi from 'jquery-ui';
 
+class Main {
+    public start() {
+        console.log("Hello");
+    }
 }
 
-
-window["Main"] = new Main();
+let main =  new Main();
+main.start();
