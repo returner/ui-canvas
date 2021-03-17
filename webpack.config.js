@@ -2,6 +2,9 @@ var webpack = require('webpack');
 const path = require('path');
 //const CopyWebpackPlugin = require('copy-webpack-plugin');
 //const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+//var jQuery = require('jquery');
+//require('jquery-ui'); 
+//require('jquery-ui-dist/jquery-ui.js');
 
 module.exports = (env, options) => {
     const config = {
@@ -29,11 +32,22 @@ module.exports = (env, options) => {
             hot: true,
         },
         resolve: {
-            extensions: ['.ts', '.tsx', '.js']
+            extensions: ['.ts', '.tsx', '.js'],
+            // alias: {
+            //     'jquery-ui': 'jquery-ui-dist/jquery-ui.js',
+            //     modules: path.join(__dirname, "node_modules"),
+            // }
         },
         output: {
             filename: '[name].js'
-        }
+        },
+        // plugins: [
+        //     new webpack.ProvidePlugin({
+        //         '$': 'jquery',
+        //         'jQuery': 'jquery',
+        //         'window.jQuery': 'jquery'
+        //     })
+        // ],
     };
 
     //if (options.mode === 'development') {

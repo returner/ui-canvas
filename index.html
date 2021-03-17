@@ -2,26 +2,57 @@
     <head>
         <!-- CSS only -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+        <link href="./lib/jquery-ui.min.css" rel="stylesheet">
+        <link href="./lib/jquery-ui.structure.min.css" rel="stylesheet">
+        <link href="./lib/jquery-ui.theme.min.css" rel="stylesheet">
     </head>
     <body>
         <div class="main-container">
             <div class="row">
-                <div class="col-md-2 toolbar-container"></div>
-                <div class="col-md-10 canvas-container">
-                    <div class="canvas">
-                        
+                <div class="col-md-12">
+                    <div class="row" >
+                        <div class="col-md-12">
+                            <button>delete</button>
+                            <button>import</button>
+                            <button>export</button>
+                        </div>
+                    </div>
+                    <div class="row editor-area">
+                        <div class="col-md-2 toolbar-container">
+                            <ul class="toolbar-items">
+                                <li>
+                                    <div class="component" data-type="position">position</div>
+                                </li>
+                                <li>
+                                    <div class="component" data-type="text">text</div>
+                                </li>
+                                <li>
+                                    <div class="component">rect</div>
+                                </li>
+                                <li>
+                                    <div class="component">image</div>
+                                </li>
+                                <li>
+                                    <div class="component">device</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-10 canvas-container">
+                            <div id="canvas" class="canvas">
+        
+                            </div>
+                        </div>
                     </div>
                 </div>
+                
             </div>
             
         </div>
     </body>
-    <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     <script>
         var jsVersion = Math.floor(+ new Date() / 1000);
         var scriptFiles = [
-            "./dist/main.js",
+            "./dist/main.js"
         ];
         for (let i = 0; i < scriptFiles.length; i++) {
             let script = document.createElement("script");
@@ -42,4 +73,5 @@
             head.appendChild(css);
         }
     </script>
+    
 </html>

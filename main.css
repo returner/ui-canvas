@@ -1,6 +1,11 @@
 .main-container {
     width: 100%;
     height: 1000px;
+    padding-left:20px;
+    padding-top:10px;
+}
+.editor-area {
+    padding-top:10px;
 }
 .toolbar-container {
     height:1000px;
@@ -16,7 +21,19 @@
 .canvas {
     width: 1024px;
     height : 768px;
-    margin-left:100px;
-    margin-top : 50px;
+    /* margin-left:100px;
+    margin-top : 50px; */
+    position:absolute !important;   
     box-shadow: 3px 3px 3px 3px lightgray;
 }
+
+.toolbar-items {
+    list-style-type: none;
+}
+
+.dropped {
+    position: absolute !important;
+}
+.dropped:hover {
+    cursor:move;
+ }
