@@ -88,6 +88,7 @@ class Main {
                 switch(dataType) {
                     case "image":
                         return controlElement.createImageControl(clonedControl);
+                    
                     default:
                         return controlElement.createImageControl(clonedControl);
                 }
@@ -111,6 +112,8 @@ class Main {
         switch(dataType) {
             case "image":
                 return controlElement.createImageControl(item, uiSize);
+            case "text":
+                return controlElement.createTextControl(item, uiSize)
             default:
                 let cloneElement = item.addClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS).draggable({
                     cursor : "move",
