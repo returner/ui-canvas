@@ -31,9 +31,9 @@
     list-style-type: none;
 }
 
-.dropped {
+.canvas-control-item {
     position: absolute !important;
 }
-.dropped:hover {
+.canvas-control-item:hover {
     cursor:move;
  }

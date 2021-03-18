@@ -28,6 +28,7 @@ import "jquery-ui/ui/widgets/selectable";
 import "jquery-ui/ui/widgets/droppable";
 import "jquery-ui/ui/widgets/draggable";
 import "jquery-ui/ui/widgets/resizable";
+import { ControlElement } from "./controlElements";
 
 export class ControlSize {
     public left : number = 0;
@@ -39,6 +40,7 @@ export class ControlSize {
         return [this.left, this.top, this.right, this.bottom];
     }
 }
+
 class Main {
     isDebug : boolean = true;
     canvasSize : ControlSize;
@@ -67,8 +69,8 @@ class Main {
                     let uiSize = new ControlSize();
                     uiSize.left = ui.position.left;
                     uiSize.top = ui.position.top;
-
-                    let cloneElement = this.createControlInCanvas($(ui.draggable).clone(),uiSize);
+                    
+                    let cloneElement = this.createControlInCanvas($(ui.draggable).clone(), uiSize);
                     $("#canvas").append(cloneElement);
                 }
             },
@@ -98,20 +100,65 @@ class Main {
     private createControlInCanvas(item : JQuery<HTMLElement>, uiSize : ControlSize) : JQuery<HTMLElement> {
         let dataType = item.attr("data-type");
         this.log(`createDroppedItem dataType:${dataType}`);
+        let controlElement = new ControlElement();
 
-        let cloneElement = item.addClass(this.CONTROL_ITEM_IN_CANVAS).draggable({
-            cursor : "move",
-            containment : this.canvasSize.toArray()
-        });
-        cloneElement.resizable();
-        cloneElement.css({
-            'left':uiSize.left - this.canvasSize.left,
-            'top':uiSize.top - this.canvasSize.top,
-            "width":"200px",
-            "height":"150px",
-            "background-color":"dodgerblue"
-        });
-        return cloneElement;
+        switch(dataType) {
+            case "image":
+                let dataPath = item.attr("data-path");
+                if (dataPath === undefined)
+                    dataPath = "";
+                let createContainer = $(document.createElement("div"))
+                    .attr("id","createelement");
+
+                let defaultCss = item.attr("class");
+                if (defaultCss !== undefined)
+                {
+                    createContainer.addClass(defaultCss);
+                }
+                createContainer.addClass(this.CONTROL_ITEM_IN_CANVAS);
+                createContainer.css(
+                    {
+                        "position" : "absolute",
+                        'left':uiSize.left - this.canvasSize.left,
+                        'top':uiSize.top - this.canvasSize.top,
+                        "display":"inline-block",
+                        //"border":"1px dotted",
+                        "width":"100",
+                        "height":"80"
+                    }
+                ).draggable({
+                    cursor : "move",
+                    containment : this.canvasSize.toArray()
+                }).resizable();
+
+                let imageContainer = $(document.createElement("img"));
+                if (dataPath !== undefined)
+                {
+                    imageContainer.attr("src", dataPath)
+                    .css({
+                        "width":"100%",
+                        "height":"100%"
+                    })
+                    ;
+                    createContainer.append(imageContainer);
+                }
+                return createContainer;
+            default:
+                let cloneElement = item.addClass(this.CONTROL_ITEM_IN_CANVAS).draggable({
+                    cursor : "move",
+                    containment : this.canvasSize.toArray()
+                });
+                cloneElement.resizable();
+                cloneElement.css({
+                    'left':uiSize.left - this.canvasSize.left,
+                    'top':uiSize.top - this.canvasSize.top,
+                    "width":"200px",
+                    "height":"150px",
+                    "background-color":"dodgerblue"
+                });
+                return cloneElement;
+        }
+  
     }
 
     private log(logMessage : any) {
