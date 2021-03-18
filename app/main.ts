@@ -52,13 +52,18 @@ class Main {
         $("#canvas").droppable({
             accept: '.component',
             drop : (event,ui) =>{
+                //design change when dropped
                 if (!ui.draggable.hasClass("dropped"))
                 {
                     this.log(`ui:${ui.position.left} ut:${ui.position.top} l:${this.canvasLeft} t:${this.canvasTop} r:${this.canvasRight} b:${this.canvasBottom}`)
                     let cloneElement = this.createDroppedItem($(ui.draggable).clone());
-                    cloneElement.css('left',ui.position.left - this.canvasLeft);    
-                    cloneElement.css('top',ui.position.top - this.canvasTop);
-                    
+                    cloneElement.css({
+                        'left':ui.position.left - this.canvasLeft,
+                        'top':ui.position.top - this.canvasTop,
+                        "width":"200px",
+                        "height":"150px",
+                        "background-color":"dodgerblue"
+                    });
                     $("#canvas").append(cloneElement);
                 }
             },
@@ -66,18 +71,44 @@ class Main {
                 console.log(ui);
             },
         });
-
+        let rootThis = this;
         $(".component").draggable({
-            helper: function() {
-                return $(this).clone().appendTo('body').css({
-                    'zIndex': 5
-                });
+            helper: function () {
+                return $(this).clone().appendTo('body').css("zIndex",99).css("background-color","red").css("width","100px").css("height","100px").text("dragging..");
+                //let rootThis = this;
+                //return rootThis.helperr(rootThis, this);
+                //return $(this).clone();
             },
             cursor: 'move',
             containment: "document",
-            drag:(event,ui)=>{},
-            stop:(event,ui)=>{}
+            // start:(event,ui)=>{
+            //     $(this).css("width","500px").css("height","500px").css("color","red").text("dragging..");
+            // },
+            //start : this.createDragStartItem,
         });
+    }
+
+    private createDragStartItem(event, ui)
+    {
+        return $(this).css("width","500px").css("height","500px").css("color","red").css("zIndex",99).text("dragging..");
+    }
+
+    private helperr(rootThis, thisParm) : JQuery<this> {
+        // let clone = $(thisParm).clone()
+        // return this.createDragItem($(thisParm));
+        return $(thisParm).clone();
+    }
+
+
+    private createDragItem(dragItem : JQuery<this>) : JQuery<this> {
+        let item = dragItem.clone().appendTo('body').css({
+            'zIndex': 5,
+            "height":"500px",
+            "width":"500px",
+            "background-color":"red"
+        });
+
+        return item;
     }
 
     private createDroppedItem(item : JQuery<HTMLElement>) : JQuery<HTMLElement> {
