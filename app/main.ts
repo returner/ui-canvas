@@ -27,43 +27,48 @@ import "jquery-ui/ui/widgets/controlgroup";
 import "jquery-ui/ui/widgets/selectable";
 import "jquery-ui/ui/widgets/droppable";
 import "jquery-ui/ui/widgets/draggable";
+import "jquery-ui/ui/widgets/resizable";
 
+export class ControlSize {
+    public left : number = 0;
+    public top : number = 0;
+    public right : number = 0;
+    public bottom : number = 0;
 
+    public toArray() : Array<number> {
+        return [this.left, this.top, this.right, this.bottom];
+    }
+}
 class Main {
     isDebug : boolean = true;
+    canvasSize : ControlSize;
     
-    canvasLeft : number = 0;
-    canvasTop :number = 0;
-    canvasRight : number = 0;
-    canvasBottom : number = 0;
+    CONTROL_ITEM_IN_CANVAS : string = "canvas-control-item";
 
     constructor() {
+        this.canvasSize = new ControlSize();
     }
 
     public registerDraggableItems() {
         let canvasRect = document.getElementById("canvas")?.getBoundingClientRect();
         if (canvasRect !== null && canvasRect !== undefined){
-            this.canvasLeft = canvasRect.left;
-            this.canvasTop = canvasRect.top;
-            this.canvasRight = canvasRect.right;
-            this.canvasBottom = canvasRect.bottom;
+            this.canvasSize.left = canvasRect.left;
+            this.canvasSize.top = canvasRect.top;
+            this.canvasSize.right = canvasRect.right;
+            this.canvasSize.bottom = canvasRect.bottom;
         }
-        
         $("#canvas").droppable({
             accept: '.component',
-            drop : (event,ui) =>{
+            drop : (event,ui) => {
                 //design change when dropped
-                if (!ui.draggable.hasClass("dropped"))
+                if (!ui.draggable.hasClass(this.CONTROL_ITEM_IN_CANVAS))
                 {
-                    this.log(`ui:${ui.position.left} ut:${ui.position.top} l:${this.canvasLeft} t:${this.canvasTop} r:${this.canvasRight} b:${this.canvasBottom}`)
-                    let cloneElement = this.createDroppedItem($(ui.draggable).clone());
-                    cloneElement.css({
-                        'left':ui.position.left - this.canvasLeft,
-                        'top':ui.position.top - this.canvasTop,
-                        "width":"200px",
-                        "height":"150px",
-                        "background-color":"dodgerblue"
-                    });
+                    this.log(`ui:${ui.position.left} ut:${ui.position.top} l:${this.canvasSize.left} t:${this.canvasSize.top} r:${this.canvasSize.right} b:${this.canvasSize.bottom}`)
+                    let uiSize = new ControlSize();
+                    uiSize.left = ui.position.left;
+                    uiSize.top = ui.position.top;
+
+                    let cloneElement = this.createControlInCanvas($(ui.draggable).clone(),uiSize);
                     $("#canvas").append(cloneElement);
                 }
             },
@@ -74,47 +79,37 @@ class Main {
         let rootThis = this;
         $(".component").draggable({
             helper: function () {
-                return $(this).clone().appendTo('body').css("zIndex",99).css("background-color","red").css("width","100px").css("height","100px").text("dragging..");
-                //let rootThis = this;
-                //return rootThis.helperr(rootThis, this);
-                //return $(this).clone();
+                let clonedControl = $(this).clone();
+                let dataType = clonedControl.attr("data-type");
+                console.log(dataType);
+                return clonedControl.appendTo('body').css("zIndex",99).css("background-color","red").css("width","100px").css("height","100px").text("dragging..");
             },
             cursor: 'move',
             containment: "document",
-            // start:(event,ui)=>{
-            //     $(this).css("width","500px").css("height","500px").css("color","red").text("dragging..");
-            // },
-            //start : this.createDragStartItem,
+            start:(event,ui)=>{
+                //$(this).css("background-color","dodgerblue");
+            },
+            stop : (event, ui) => {
+                //$(this).css("background-color","black");
+            }
         });
     }
 
-    private createDragStartItem(event, ui)
-    {
-        return $(this).css("width","500px").css("height","500px").css("color","red").css("zIndex",99).text("dragging..");
-    }
+    private createControlInCanvas(item : JQuery<HTMLElement>, uiSize : ControlSize) : JQuery<HTMLElement> {
+        let dataType = item.attr("data-type");
+        this.log(`createDroppedItem dataType:${dataType}`);
 
-    private helperr(rootThis, thisParm) : JQuery<this> {
-        // let clone = $(thisParm).clone()
-        // return this.createDragItem($(thisParm));
-        return $(thisParm).clone();
-    }
-
-
-    private createDragItem(dragItem : JQuery<this>) : JQuery<this> {
-        let item = dragItem.clone().appendTo('body').css({
-            'zIndex': 5,
-            "height":"500px",
-            "width":"500px",
-            "background-color":"red"
-        });
-
-        return item;
-    }
-
-    private createDroppedItem(item : JQuery<HTMLElement>) : JQuery<HTMLElement> {
-        let cloneElement = item.addClass("dropped").draggable({
+        let cloneElement = item.addClass(this.CONTROL_ITEM_IN_CANVAS).draggable({
             cursor : "move",
-            containment : [this.canvasLeft, this.canvasTop, this.canvasRight, this.canvasBottom]
+            containment : this.canvasSize.toArray()
+        });
+        cloneElement.resizable();
+        cloneElement.css({
+            'left':uiSize.left - this.canvasSize.left,
+            'top':uiSize.top - this.canvasSize.top,
+            "width":"200px",
+            "height":"150px",
+            "background-color":"dodgerblue"
         });
         return cloneElement;
     }
