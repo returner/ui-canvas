@@ -28,7 +28,9 @@ import "jquery-ui/ui/widgets/selectable";
 import "jquery-ui/ui/widgets/droppable";
 import "jquery-ui/ui/widgets/draggable";
 import "jquery-ui/ui/widgets/resizable";
-import { ControlElement } from "./controlElements";
+import { DrawControlElement } from "./drawControlElements";
+import { Constants } from "./constants";
+import { DrawDragElement } from "./drawDragElement";
 
 export class ControlSize {
     public left : number = 0;
@@ -45,8 +47,6 @@ class Main {
     isDebug : boolean = true;
     canvasSize : ControlSize;
     
-    CONTROL_ITEM_IN_CANVAS : string = "canvas-control-item";
-
     constructor() {
         this.canvasSize = new ControlSize();
     }
@@ -63,7 +63,7 @@ class Main {
             accept: '.component',
             drop : (event,ui) => {
                 //design change when dropped
-                if (!ui.draggable.hasClass(this.CONTROL_ITEM_IN_CANVAS))
+                if (!ui.draggable.hasClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS))
                 {
                     this.log(`ui:${ui.position.left} ut:${ui.position.top} l:${this.canvasSize.left} t:${this.canvasSize.top} r:${this.canvasSize.right} b:${this.canvasSize.bottom}`)
                     let uiSize = new ControlSize();
@@ -84,7 +84,13 @@ class Main {
                 let clonedControl = $(this).clone();
                 let dataType = clonedControl.attr("data-type");
                 console.log(dataType);
-                return clonedControl.appendTo('body').css("zIndex",99).css("background-color","red").css("width","100px").css("height","100px").text("dragging..");
+                let controlElement = new DrawDragElement();
+                switch(dataType) {
+                    case "image":
+                        return controlElement.createImageControl(clonedControl);
+                    default:
+                        return controlElement.createImageControl(clonedControl);
+                }
             },
             cursor: 'move',
             containment: "document",
@@ -100,51 +106,13 @@ class Main {
     private createControlInCanvas(item : JQuery<HTMLElement>, uiSize : ControlSize) : JQuery<HTMLElement> {
         let dataType = item.attr("data-type");
         this.log(`createDroppedItem dataType:${dataType}`);
-        let controlElement = new ControlElement();
+        let controlElement = new DrawControlElement(this.canvasSize);
 
         switch(dataType) {
             case "image":
-                let dataPath = item.attr("data-path");
-                if (dataPath === undefined)
-                    dataPath = "";
-                let createContainer = $(document.createElement("div"))
-                    .attr("id","createelement");
-
-                let defaultCss = item.attr("class");
-                if (defaultCss !== undefined)
-                {
-                    createContainer.addClass(defaultCss);
-                }
-                createContainer.addClass(this.CONTROL_ITEM_IN_CANVAS);
-                createContainer.css(
-                    {
-                        "position" : "absolute",
-                        'left':uiSize.left - this.canvasSize.left,
-                        'top':uiSize.top - this.canvasSize.top,
-                        "display":"inline-block",
-                        //"border":"1px dotted",
-                        "width":"100",
-                        "height":"80"
-                    }
-                ).draggable({
-                    cursor : "move",
-                    containment : this.canvasSize.toArray()
-                }).resizable();
-
-                let imageContainer = $(document.createElement("img"));
-                if (dataPath !== undefined)
-                {
-                    imageContainer.attr("src", dataPath)
-                    .css({
-                        "width":"100%",
-                        "height":"100%"
-                    })
-                    ;
-                    createContainer.append(imageContainer);
-                }
-                return createContainer;
+                return controlElement.createImageControl(item, uiSize);
             default:
-                let cloneElement = item.addClass(this.CONTROL_ITEM_IN_CANVAS).draggable({
+                let cloneElement = item.addClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS).draggable({
                     cursor : "move",
                     containment : this.canvasSize.toArray()
                 });
