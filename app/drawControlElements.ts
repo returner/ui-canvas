@@ -67,13 +67,15 @@ export class DrawControlElement {
                 "position" : "absolute",
                 'left':uiSize.left - this.canvasSize.left,
                 'top':uiSize.top - this.canvasSize.top,
-                //"display":"inline-block",
-                "width":"100%",
-                "height":"100%",
+                "width":"52",
+                "height":"45",
                 "background-color":"dodgerblue",
-                "vertical-align":"middle",
-                "text-align":"center",
-                "border-radius":"3px"
+                //"vertical-align":"middle",
+                //"text-align":"center",
+                "border-radius":"3px",
+                "display":"flex",
+                "align-items":"center",
+                "justify-content":"center"
             }
         )
         .draggable({
@@ -89,14 +91,79 @@ export class DrawControlElement {
                 .attr("type","text")
                 .attr("value","text")
                 .css({
-                    "position":"relative",
-                    "z-index":1
-                }).on("changed",()=>{
-                    $("#input").css("z-index",1);
-                    $(this).css("z-index",2);
+                    "width": function (){
+                        return "text".length * 8
+                    },
+                    "font-family":"Segoe UI, Arial, sans-serif",
+                    "font-size":"14px"
+                })
+                .on("keydown", function() {
+                    let len = $(this).val()?.toString().length;
+                    if (len !== undefined)
+                    {
+                        $(this).css("width",len * 8);
+                    }
                 });
                 
                 
+                
+                
+            createContainer.append(inputContainer);
+        }
+        return createContainer;
+    }
+
+    public createPositionControl(item : JQuery<HTMLElement>, uiSize : ControlSize) : JQuery<HTMLElement>{
+        let dataPath = item.attr("data-path");
+        if (dataPath === undefined)
+            dataPath = "";
+        let createContainer = $(document.createElement("div"))
+
+        let defaultCss = item.attr("class");
+        if (defaultCss !== undefined)
+        {
+            createContainer.addClass(defaultCss);
+        }
+        createContainer.addClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS);
+        createContainer.css(
+            {
+                "position" : "absolute",
+                'left':uiSize.left - this.canvasSize.left,
+                'top':uiSize.top - this.canvasSize.top,
+                "width":"65",
+                "height":"34",
+                "background-color":"transparent",
+                "border-radius":"3px",
+                "display":"flex",
+                "align-items":"center",
+                "justify-content":"center",
+                "border":"1px dotted"
+            }
+        )
+        .draggable({
+            cursor : "move",
+            containment : this.canvasSize.toArray()
+        }).resizable();
+
+        let inputContainer = $(document.createElement("input"));
+        inputContainer.attr("id","input")
+        if (dataPath !== undefined)
+        {
+            inputContainer
+                .attr("type","text")
+                .attr("value","000000")
+                .css({
+                    "width": "48px",
+                    "font-family":"fixedsys",
+                    "font-size":"10px",
+                })
+                .on("change", function() {
+                    let len = $(this).val()?.toString().length;
+                    if (len !== undefined)
+                    {
+                        $(this).css("width",len * 8);
+                    }
+                });
             createContainer.append(inputContainer);
         }
         return createContainer;

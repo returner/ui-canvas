@@ -114,6 +114,8 @@ class Main {
                 return controlElement.createImageControl(item, uiSize);
             case "text":
                 return controlElement.createTextControl(item, uiSize)
+            case "position":
+                return controlElement.createPositionControl(item, uiSize)
             default:
                 let cloneElement = item.addClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS).draggable({
                     cursor : "move",
