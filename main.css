@@ -45,3 +45,8 @@
      border: 1px;
      border-style: solid;
  }
+
+ .canvas-control-container:hover {
+    border-color : orange;
+    border : 2px dotted !important;
+ }

@@ -63,7 +63,7 @@ class Main {
             accept: '.component',
             drop : (event,ui) => {
                 //design change when dropped
-                if (!ui.draggable.hasClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS))
+                if (!ui.draggable.hasClass(Constants.CANVAS_CONTROL_CONTAINER))
                 {
                     this.log(`ui:${ui.position.left} ut:${ui.position.top} l:${this.canvasSize.left} t:${this.canvasSize.top} r:${this.canvasSize.right} b:${this.canvasSize.bottom}`)
                     let uiSize = new ControlSize();
@@ -116,6 +116,8 @@ class Main {
                 return controlElement.createTextControl(item, uiSize)
             case "position":
                 return controlElement.createPositionControl(item, uiSize)
+            case "device":
+                return controlElement.createDeviceControl(item, uiSize)
             default:
                 let cloneElement = item.addClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS).draggable({
                     cursor : "move",

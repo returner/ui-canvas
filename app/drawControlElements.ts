@@ -20,7 +20,7 @@ export class DrawControlElement {
         {
             createContainer.addClass(defaultCss);
         }
-        createContainer.addClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS);
+        createContainer.addClass(Constants.CANVAS_CONTROL_CONTAINER);
         createContainer.css(
             {
                 "position" : "absolute",
@@ -61,7 +61,7 @@ export class DrawControlElement {
         {
             createContainer.addClass(defaultCss);
         }
-        createContainer.addClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS);
+        createContainer.addClass(Constants.CANVAS_CONTROL_CONTAINER);
         createContainer.css(
             {
                 "position" : "absolute",
@@ -124,7 +124,7 @@ export class DrawControlElement {
         {
             createContainer.addClass(defaultCss);
         }
-        createContainer.addClass(Constants.CONTROL_ITEM_IN_CANVAS_CLASS);
+        createContainer.addClass(Constants.CANVAS_CONTROL_CONTAINER);
         createContainer.css(
             {
                 "position" : "absolute",
@@ -166,6 +166,65 @@ export class DrawControlElement {
                 });
             createContainer.append(inputContainer);
         }
+        return createContainer;
+    }
+
+    public createDeviceControl(item : JQuery<HTMLElement>, uiSize : ControlSize) : JQuery<HTMLElement>{
+        let dataPath = item.attr("data-path");
+        if (dataPath === undefined)
+            dataPath = "";
+        let createContainer = $(document.createElement("div"))
+
+        let defaultCss = item.attr("class");
+        if (defaultCss !== undefined)
+        {
+            createContainer.addClass(defaultCss);
+        }
+        createContainer.addClass(Constants.CANVAS_CONTROL_CONTAINER);
+        createContainer.css(
+            {
+                "position" : "absolute",
+                'left':uiSize.left - this.canvasSize.left,
+                'top':uiSize.top - this.canvasSize.top,
+                "width":"70",
+                "height":"128",
+                "background-color":"transparent",
+                "border-radius":"3px",
+                //"display":"flex",
+                "align-items":"center",
+                "justify-content":"center",
+                "border":"1px dotted",
+                "display":"table-cell",
+                "vertical-align":"middle"
+            }
+        )
+        .draggable({
+            cursor : "move",
+            containment : this.canvasSize.toArray()
+        })
+
+        let title = $(document.createElement("span"))
+        title.text("aasName")
+        .css({
+            "font-family":"fixedsys",
+            "font-size":"12px",
+            "font-weight":"bold"
+        });
+        let rect = $(document.createElement("div"))
+        rect.css({
+            "width":"100%",
+            "height":"15px",
+            "background-color":"dodgerblue",
+        });
+        let deviceImage = $(document.createElement("img"));
+        deviceImage.attr("src","https://dev.kopenmos.com/thumbnail/NewOHT_Type")
+        .css({
+            "width":"100%",
+            "height":"90px"
+        })
+        createContainer.append(title);
+        createContainer.append(rect);
+        createContainer.append(deviceImage);
         return createContainer;
     }
 }
